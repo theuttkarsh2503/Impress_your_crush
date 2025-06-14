@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Care & Magic 💫</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #fff1f5, #ffe6ec);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    h2 {
+      margin-top: 2rem;
+      color: #c2185b;
+      font-size: 2rem;
+      padding: 0 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 2rem 0;
+      width: 100%;
+    }
+
+    ul li {
+      background: #fce4ec;
+      padding: 12px 20px;
+      margin: 10px auto;
+      border-radius: 20px;
+      font-size: 1.1rem;
+      color: #4a148c;
+      max-width: 90%;
+      position: relative;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+    }
+
+    .effect {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.4rem;
+      animation: floatUp 2s ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      50% { opacity: 1; transform: translateX(-50%) translateY(-10px); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-30px); }
+    }
+
+    .btn-row {
+      margin: 30px 0;
+    }
+
+    button {
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      background-color: #f06292;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @media (max-width: 600px) {
+      h2 {
+        font-size: 1.5rem;
+      }
+      button {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Care tips for my Pikachu 🌷</h2>
+
+  <ul id="care-list">
+    <li data-symbol="💧">Stay hydrated — warm water is your BFF</li>
+    <li data-symbol="🍲">Don’t skip meals</li>
+    <li data-symbol="👑">Rest like the queen you are</li>
+    <li data-symbol="🛡️">Let the cramps try — I’m your shield</li>
+    <li data-symbol="💗">You're not alone, not today, not ever</li>
+  </ul>
+
+  <div class="btn-row">
+    <a href="adorable-reasons.html">
+      <button>Wanna see something special? 😚</button>
+    </a>
+  </div>
+
+  <script>
+    function showEffect(element, symbol) {
+      const span = document.createElement('span');
+      span.classList.add('effect');
+      span.textContent = symbol;
+      element.appendChild(span);
+      setTimeout(() => span.remove(), 2000);
+    }
+
+    const items = document.querySelectorAll('#care-list li');
+    items.forEach((item, i) => {
+      setTimeout(() => {
+        item.style.opacity = 1;
+        item.style.transform = 'translateY(0)';
+        showEffect(item, item.getAttribute('data-symbol'));
+      }, i * 1800);
+    });
+  </script>
+
+</body>
+</html>

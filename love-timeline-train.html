@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Love Express Memory Timeline - 3D Train with Three.js</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@600&display=swap');
+
+  :root {
+    --bg-light: #ffffff;
+    --text-gray: #6b7280;
+    --accent-pink: #e11d48;
+    --accent-red: #dc2626;
+    --track-dark: #9ca3af;
+    --border-radius: 0.75rem;
+  }
+
+  /* Base reset */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    background-color: var(--bg-light);
+    font-family: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    color: var(--text-gray);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Container for timeline and canvas */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+    position: relative;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 3rem;
+    user-select: none;
+  }
+  header h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--accent-red);
+    letter-spacing: 0.05em;
+    margin: 0;
+  }
+  header p {
+    margin-top: 0.5rem;
+    font-size: 1.25rem;
+    color: var(--text-gray);
+  }
+
+  /* Timeline container */
+  .timeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+    padding-left: 3rem;
+    user-select: none;
+    /* Create stacking context for canvas */
+    z-index: 2;
+  }
+
+  /* Vertical railway track line (normal HTML) */
+  .timeline::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 1.5rem;
+    width: 8px;
+    height: 100%;
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--track-dark),
+      var(--track-dark) 10px,
+      transparent 10px,
+      transparent 20px
+    );
+    border-radius: 4px;
+    z-index: 1;
+  }
+
+  /* Each event box */
+  .timeline-event {
+    position: relative;
+    background: #fff;
+    padding: 1.5rem 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    cursor: default;
+    z-index: 10;
+  }
+  .timeline-event:hover,
+  .timeline-event:focus-within {
+    box-shadow: 0 20px 25px rgba(0,0,0,0.1);
+    transform: translateX(15px);
+    outline: none;
+  }
+
+  /* Circle node */
+  .timeline-event::before {
+    content: '';
+    position: absolute;
+    left: -3.6rem;
+    top: 1.65rem;
+    width: 28px;
+    height: 28px;
+    background: var(--accent-pink);
+    border: 5px solid var(--bg-light);
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    z-index: 20;
+  }
+  .timeline-event:hover::before,
+  .timeline-event:focus-within::before {
+    background-color: var(--accent-red);
+    box-shadow: 0 5px 15px var(--accent-red);
+  }
+
+  /* Event text */
+  .timeline-event h2 {
+    margin: 0 0 0.7rem 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #111;
+  }
+  .timeline-event time {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent-pink);
+    display: block;
+    margin-bottom: 1rem;
+  }
+  .timeline-event p {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-gray);
+  }
+
+  /* Three.js canvas container */
+  #threejs-container {
+    position: absolute;
+    top: 0;
+    left: 0.7rem; /* Slight left to align with timeline track */
+    width: 60px; /* Enough for train and wheels */
+    height: 100%;
+    pointer-events: none;
+    z-index: 1; /* Behind timeline events */
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 600px) {
+    .timeline {
+      padding-left: 2rem;
+      gap: 2.5rem;
+    }
+    .timeline-event {
+      padding: 1rem 1.25rem;
+    }
+    .timeline-event::before {
+      left: -2.7rem;
+      width: 22px;
+      height: 22px;
+      border-width: 4px;
+    }
+    #threejs-container {
+      width: 45px;
+      left: 1rem;
+    }
+    header h1 {
+      font-size: 2.7rem;
+    }
+  }
+</style>
+</head>
+<!-- Next Button to go to demo.html -->
+<a href="open-when-sad.html" style="
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background-color: #f06292;
+  color: white;
+  padding: 12px 24px;
+  font-size: 1rem;
+  border-radius: 30px;
+  text-decoration: none;
+  box-shadow: 0 0 15px #f8bbd0;
+  z-index: 9999;
+  font-family: 'Outfit', sans-serif;
+  animation: pulse 2s infinite;
+">Next ➡️</a>
+
+<style>
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+</style>
+
+<body>
+  <div class="container" role="main">
+    <header>
+      <h1>Love Express</h1>
+      <p>A beautiful timeline of memories shared</p>
+    </header>
+
+    <!-- 3D Train Canvas Container -->
+    <div id="threejs-container" aria-hidden="true"></div>
+
+    <section class="timeline" aria-label="Memory timeline" id="timeline">
+      <!-- 📝 Your Real-Life Dates Start Here -->
+<article class="timeline-event" tabindex="0">
+  <time datetime="2025-05-25">25th May 2025</time>
+  <h2>🌿 Garden Date & Awkward Talks</h2>
+  <p>We stepped into our first ever date — in a garden. Awkward pauses, shy talks, and you looking like sunshine while I forgot what to say next 😅</p>
+</article>
+
+<article class="timeline-event" tabindex="0">
+  <time datetime="2025-06-01">1st June 2025</time>
+  <h2>🎬 Movie, Momos & ISKCON</h2>
+  <p>A cinema date, spiritual calm at ISKCON, and you eating momos with mayo (which you *secretly hate* 😆). I fed you anyway — big hearted, right?</p>
+</article>
+
+<article class="timeline-event" tabindex="0">
+  <time datetime="2025-06-09">9th June 2025</time>
+  <h2>🌶️ Sevpuri & Water Bottle Drama</h2>
+  <p>Fries and momos were fun, but nothing beats sevipuri chaos. You waited sweetly for the water while I sipped like a thirsty idiot 💧🤦‍♂️</p>
+</article>
+<article class="timeline-event" tabindex="0">
+  <time datetime="2025-12-31">Coming Soon</time>
+  <h2>📝 To Be Written by Us</h2>
+  <p>This special memory is yet to be lived and told. When the moment arrives, we’ll write it together — with love, laughter, and a little magic. 💖</p>
+</article>
+
+
+    </section>
+  </div>
+
+  <!-- Three.js library -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Setup Three.js scene
+      const container = document.getElementById('threejs-container');
+      const scene = new THREE.Scene();
+
+      // Camera setup (orthographic for 3D depth with minimal distortion)
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      const aspect = width / height;
+
+      // Parameters tuned for vertical layout: top = 0, bottom = height
+      const frustumHeight = 200; // Controls zoom level vertically
+      const camera = new THREE.OrthographicCamera(
+        frustumHeight * aspect / -2,
+        frustumHeight * aspect / 2,
+        frustumHeight / 2,
+        frustumHeight / -2,
+        1,
+        1000
+      );
+      camera.position.set(0, 0, 200);
+      camera.lookAt(0, 0, 0);
+
+      // Renderer
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setClearColor(0x000000, 0); // Transparent background
+      renderer.setSize(width, height);
+      container.appendChild(renderer.domElement);
+
+      // Resize handling
+      window.addEventListener('resize', () => {
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        const ar = w / h;
+        camera.left = (-frustumHeight * ar) / 2;
+        camera.right = (frustumHeight * ar) / 2;
+        camera.top = frustumHeight / 2;
+        camera.bottom = -frustumHeight / 2;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      });
+
+      // Soft directional light
+      const light = new THREE.DirectionalLight(0xffffff, 0.8);
+      light.position.set(0, 100, 100);
+      scene.add(light);
+      // Ambient for subtle fill light
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+      scene.add(ambientLight);
+
+      // Materials
+      const trainBodyMaterial = new THREE.MeshStandardMaterial({ color: 0xdc2626, metalness: 0.3, roughness: 0.6 });
+      const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0xb91c1c, metalness: 0.8, roughness: 0.3 });
+
+      // Train Group
+      const train = new THREE.Group();
+
+      // Train body - rounded box approximation with BoxGeometry
+      const bodyGeometry = new THREE.BoxGeometry(50, 30, 20);
+      const trainBody = new THREE.Mesh(bodyGeometry, trainBodyMaterial);
+      trainBody.position.set(0, 0, 10);
+      train.add(trainBody);
+
+      // Train roof - smaller box
+      const roofGeometry = new THREE.BoxGeometry(38, 15, 12);
+      const trainRoof = new THREE.Mesh(roofGeometry, new THREE.MeshStandardMaterial({ color: 0xfca5a5, metalness: 0.5, roughness: 0.4 }));
+      trainRoof.position.set(0, 8, 22);
+      train.add(trainRoof);
+
+      // Wheels - cylinders along the bottom side
+      const wheelGeometry = new THREE.CylinderGeometry(6, 6, 10, 32);
+      const wheelPositionsX = [-18, 0, 18];
+      wheelPositionsX.forEach(x => {
+        const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
+        wheel.rotation.z = Math.PI / 2;
+        wheel.position.set(x, -12, 6);
+        train.add(wheel);
+      });
+
+      scene.add(train);
+
+      // Create junctions array holding Y positions corresponding to timeline nodes
+      const timeline = document.getElementById('timeline');
+      const eventElements = Array.from(timeline.querySelectorAll('.timeline-event'));
+      // Get container bounding for coordinate transforms
+      const timelineRect = timeline.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect(); // canvas container
+
+      // Calculate junction positions in 3D space based on DOM positions
+      const junctions = eventElements.map(event => {
+        const rect = event.getBoundingClientRect();
+        // Y offset relative to timeline container top
+        const yOffsetPx = rect.top + rect.height * 0.5 - timelineRect.top;
+        // Map pixel position to Three.js coordinate system Y (center 0)
+        // Timeline container height corresponds to frustumHeight in Three.js
+        // Flip Y axis: HTML top=0 is Three.js y=+frustumHeight/2
+        const y = (frustumHeight / 2) - yOffsetPx * (frustumHeight / timelineRect.height);
+        return new THREE.Vector3(0, y, 0);
+      });
+
+      // Position train initially at first junction
+      if (junctions.length === 0) {
+        console.warn('No timeline events found for train animation.');
+      }
+      train.position.copy(junctions[0]);
+
+      // Animation state
+      let currentTargetIndex = 0;
+      let clock = new THREE.Clock();
+      let moveDuration = 1.2; // seconds to move between junctions
+      let pauseDuration = 1.8; // seconds to pause at junction
+      let animProgress = 0; // 0 to 1 for tween progress
+      let moving = false;
+
+      // Animate train wheels rotation
+      function rotateWheels(delta) {
+        train.children.forEach(obj => {
+          if (obj.geometry && obj.geometry.type === 'CylinderGeometry') {
+            obj.rotation.x += (delta * 10); // spin speed
+          }
+        });
+      }
+
+      // Animate function
+      function animate() {
+        requestAnimationFrame(animate);
+        const delta = clock.getDelta();
+
+        rotateWheels(delta);
+
+        if (!moving) {
+          // Pause countdown
+          animProgress += delta;
+          if (animProgress >= pauseDuration) {
+            animProgress = 0;
+            moving = true;
+            currentTargetIndex = (currentTargetIndex + 1) % junctions.length;
+          }
+        } else {
+          // Animate move from current position to target
+          animProgress += delta;
+          const t = Math.min(animProgress / moveDuration, 1);
+          const startIndex = (currentTargetIndex === 0) ? junctions.length - 1 : currentTargetIndex - 1;
+          const startPos = junctions[startIndex];
+          const endPos = junctions[currentTargetIndex];
+
+          // Ease in-out cubic bezier
+          const easedT = t < 0.5
+            ? 4 * t * t * t
+            : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+          // Lerp position
+          train.position.lerpVectors(startPos, endPos, easedT);
+
+          // 3D subtle rotation as tilt while moving
+          const maxTiltAngle = 0.15; // radians ~8.5deg
+          const tilt = Math.sin(easedT * Math.PI * 2) * maxTiltAngle;
+          train.rotation.y = tilt;
+
+          if (t >= 1) {
+            animProgress = 0;
+            moving = false;
+            train.rotation.y = 0;
+          }
+        }
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+    });
+  </script>
+</body>
+</html>
+

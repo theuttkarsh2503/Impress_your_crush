@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Open When You're Sad 💌</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@600&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(to top right, #ffe6f0, #fce4ec);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      color: #880e4f;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #d81b60;
+    }
+
+    p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin-bottom: 2rem;
+    }
+
+    .hug-btn, .sad-again-btn {
+      background: #f06292;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 0 20px #f8bbd0;
+      animation: pulse 2s infinite;
+      margin-top: 1rem;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .hug-btn:hover, .sad-again-btn:hover {
+      background-color: #ec407a;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .floating {
+      position: absolute;
+      font-size: 2rem;
+      animation: float 10s linear infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes float {
+      0%   { transform: translateY(0) rotate(0); opacity: 0.7; }
+      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+
+    .message-card {
+      background: #fff;
+      padding: 1.5rem 2rem;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      max-width: 500px;
+      margin-top: 2rem;
+      display: none;
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    .sad-again-btn {
+      display: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Hey you, my fav human 💗</h1>
+  <p>If the world feels a little heavy today, know that I’m holding your heart safe from miles away. You’re not alone. Never were. Never will be.</p>
+
+  <button class="hug-btn" onclick="showMessage()">Virtual Hug 🤗</button>
+
+  <div id="card" class="message-card">
+    <p>💬 If I could, I’d teleport with a warm tea and a tight hug. Until then, read this:<br><br>
+    <em>“You’re not too much. You’re more than enough. And you matter. Always.”</em> 💖</p>
+  </div>
+
+  <a id="sadBtn" class="sad-again-btn" href="carousel-confession.html">Open When Sad Again 😔</a>
+
+  <script>
+    const emojis = ["💖", "🫂", "🌸", "☁️", "✨", "🩷"];
+    for (let i = 0; i < 20; i++) {
+      const span = document.createElement("span");
+      span.className = "floating";
+      span.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      span.style.left = Math.random() * 100 + "vw";
+      span.style.top = Math.random() * 100 + "vh";
+      span.style.animationDuration = 5 + Math.random() * 10 + "s";
+      document.body.appendChild(span);
+    }
+
+    function showMessage() {
+      document.getElementById("card").style.display = "block";
+      document.getElementById("sadBtn").style.display = "inline-block";
+    }
+  </script>
+
+</body>
+</html>

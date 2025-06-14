@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Drag Papers ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Short+Stack&family=Homemade+Apple&display=swap'>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="paper heart"></div>
+
+  <div class="paper image">
+    <p>Fell for you like a </p>
+    <p>shy smile 💞</p>
+    <img src="images/1.png" />
+  </div>
+
+  <div class="paper red">
+    <p class="p1">You are that "Nothing"</p>
+    <p class="p2">when someone asks me what're you thinking...</p>
+  </div>
+
+  <div class="paper image">
+    <img src="images/Screenshot 2025-06-07 133907.png" />
+  </div>
+
+  <div class="paper image">
+    <p>How can be</p>
+    <p>someone so cute ❤️</p>
+    <img src="images/Screenshot 2025-06-07 133801.png" />
+  </div>
+
+  <div class="paper red">
+    <p class="p1">Infinity is invented</p>
+    <p class="p2">to rate you only ♾️/10!!</p>
+  </div>
+
+  <div class="paper">
+    <p class="p1">You are Cute</p>
+    <p class="p1">Amazing <span style="color: red !important;">❤️</span></p>
+  </div>
+
+  <div class="paper">
+    <p class="p1">Drag the papers to move!</p>
+  </div>
+
+  <!-- Script selector -->
+  <script>
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+      const script = document.createElement('script');
+      script.src = './mobile.js';
+      document.body.appendChild(script);
+    } else {
+      const script = document.createElement('script');
+      script.src = './script.js';
+      document.body.appendChild(script);
+    }
+  </script>
+</body>
+</html>

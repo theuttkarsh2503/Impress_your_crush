@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wanna be my Chamak Challo? 😏</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #fce4ec, #f8bbd0);
+      color: #4a148c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    img {
+      width: 180px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin: 0 0 20px;
+    }
+
+    .btn-container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      z-index: 2;
+    }
+
+    .btn {
+      background-color: #f06292;
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      font-size: 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      text-decoration: none;
+      position: relative;
+    }
+
+    .btn:hover {
+      background-color: #ec407a;
+    }
+
+    .floating-heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: float 10s linear infinite;
+    }
+
+    .floating-heart::before,
+    .floating-heart::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+
+    .floating-heart::before {
+      top: -10px;
+      left: 0;
+    }
+
+    .floating-heart::after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(45deg); opacity: 1; }
+      100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  
+
+  <!-- Dancing GIF -->
+  <img src="uttkarsh-ezgif.com-resize.gif" alt="SRK Dance" />
+
+  <h2>Wanna be my Chamak Challo 😏 ?</h2>
+
+  <div class="btn-container">
+    <button class="btn" id="yesBtn">Yes</button>
+    <button class="btn" id="noBtn">No</button>
+  </div>
+
+  <!-- Floating hearts and button logic -->
+  <script>
+    // Floating hearts
+    for (let i = 0; i < 15; i++) {
+      const heart = document.createElement('div');
+      heart.classList.add('floating-heart');
+      heart.style.left = `${Math.random() * 100}%`;
+      heart.style.animationDuration = `${5 + Math.random() * 5}s`;
+      document.body.appendChild(heart);
+    }
+
+    // Track if No was clicked
+    let noClicked = false;
+    let yesClickedOnce = false;
+
+    // Yes button logic
+    document.getElementById('yesBtn').onclick = function () {
+      if (!yesClickedOnce && !noClicked) {
+        alert("Ekk baar No try karke bhi dekhlo 😜");
+        yesClickedOnce = true;
+      } else {
+        window.location.href = "care-tips.html"; // Redirect to care tips page
+      }
+    };
+
+    // No button dodging logic
+    const noBtn = document.getElementById('noBtn');
+    noBtn.addEventListener('mouseenter', () => {
+      const randomX = Math.floor(Math.random() * 80);
+      const randomY = Math.floor(Math.random() * 80);
+      noBtn.style.position = 'absolute';
+      noBtn.style.top = `${randomY}%`;
+      noBtn.style.left = `${randomX}%`;
+      noClicked = true;
+    });
+  </script>
+
+</body>
+</html>
